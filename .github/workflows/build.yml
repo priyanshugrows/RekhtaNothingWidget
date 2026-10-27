@@ -31,6 +31,11 @@ jobs:
         run: |
           unzip -q RekhtaNothingWidget-source.zip -d extracted
           ls -la extracted/RekhtaNothingWidget
+          
+      - name: Fix widget description resource
+        run: |
+          sed -i 's/android:description="Five daily shers in a Nothing-inspired red and black widget"//' extracted/RekhtaNothingWidget/app/src/main/res/xml/sher_widget_info.xml
+          
 
       - name: Build APK
         working-directory: extracted/RekhtaNothingWidget
