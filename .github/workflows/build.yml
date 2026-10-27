@@ -1,0 +1,45 @@
+name: Build Rekhta Nothing Widget
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'RekhtaNothingWidget-source.zip'
+      - '.github/workflows/build.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download project files
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extract Android project
+        run: |
+          unzip -q RekhtaNothingWidget-source.zip -d extracted
+          ls -la extracted/RekhtaNothingWidget
+
+      - name: Build APK
+        working-directory: extracted/RekhtaNothingWidget
+        run: gradle assembleDebug
+
+      - name: Save APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RekhtaNothingWidget-APK
+          path: extracted/RekhtaNothingWidget/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          
